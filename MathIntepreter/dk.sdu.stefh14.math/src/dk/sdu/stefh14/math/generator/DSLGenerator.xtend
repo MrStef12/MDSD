@@ -8,6 +8,7 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import javax.swing.JOptionPane
+import dk.sdu.stefh14.math.dSL.Expression
 import dk.sdu.stefh14.math.dSL.MathExp
 import dk.sdu.stefh14.math.dSL.Exp
 import dk.sdu.stefh14.math.dSL.Primary
@@ -15,8 +16,9 @@ import dk.sdu.stefh14.math.dSL.Plus
 import dk.sdu.stefh14.math.dSL.Minus
 import dk.sdu.stefh14.math.dSL.Mult
 import dk.sdu.stefh14.math.dSL.Div
-import dk.sdu.stefh14.math.dSL.Number;
-import dk.sdu.stefh14.math.dSL.Parenthesis;
+import dk.sdu.stefh14.math.dSL.Number
+import dk.sdu.stefh14.math.dSL.Parenthesis
+import dk.sdu.stefh14.math.dSL.Factor
 
 /**
  * Generates code from your model files on save.
@@ -42,7 +44,7 @@ class DSLGenerator extends AbstractGenerator {
 	}
 	
 	def int computeExp(Exp exp) {
-		val left = exp.left.computePrim
+		val left = exp.left.computeFactor
 		switch exp.operator {
 			Plus: left+exp.right.computeExp
 			Minus: left-exp.right.computeExp
@@ -52,12 +54,16 @@ class DSLGenerator extends AbstractGenerator {
 		}
 	}
 	
-	def dispatch int computePrim(Number factor) { 
-		factor.value
+	def int computeFactor(Factor fac) {
+		fac.left.computePrim
 	}
 	
-	def dispatch int computePrim(Parenthesis factor) { 
-		factor.exp.computeExp
+	def dispatch int computePrim(Number num) {
+		2
+	}
+	
+	def dispatch int computePrim(Parenthesis par) {
+		2
 	}
 
 	//

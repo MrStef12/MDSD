@@ -6,12 +6,20 @@ MathExp:
 	'result' 'is' exp=Exp
 ;
 
-Exp: // Illegal due to left recursion
-	left=Primary (operator=ExpOp right=Exp)?
+Exp:
+	Factor ({Exp.left=current} operator=ExpWeakOp right=Exp)?
 ;
 
-ExpOp:
-	{Plus} '+' | {Minus} '-' | {Mult} '*' | {Div} '/'	
+Factor:
+	Primary ({Factor.left=current} operator=ExpStrongOp right=Factor)?
+;
+
+ExpWeakOp:
+	{Plus} '+' | {Minus} '-'	
+;
+
+ExpStrongOp:
+	{Mult} '*' | {Div} '/'
 ;
 
 Primary:
