@@ -1,0 +1,27 @@
+grammar dk.sdu.stefh14.math.DSL with org.eclipse.xtext.common.Terminals
+
+generate dSL "http://www.sdu.dk/stefh14/math/DSL"
+
+MathExp:
+	'result' 'is' exp=Exp
+;
+
+Exp: // Illegal due to left recursion
+	left=Primary (operator=ExpOp right=Exp)?
+;
+
+ExpOp:
+	{Plus} '+' | {Minus} '-' | {Mult} '*' | {Div} '/'	
+;
+
+Primary:
+	Number | Parenthesis
+;
+
+Parenthesis:
+	'(' exp=Exp ')'
+;
+
+Number:
+	value=INT
+;

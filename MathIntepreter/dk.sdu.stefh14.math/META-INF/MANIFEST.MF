@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: dk.sdu.stefh14.math
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: dk.sdu.stefh14.math; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.13.0",
+ org.antlr.runtime,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.common,
+ org.eclipse.xtend.lib;bundle-version="2.13.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: dk.sdu.stefh14.math.serializer,
+ dk.sdu.stefh14.math.parser.antlr.internal,
+ dk.sdu.stefh14.math.dSL.impl,
+ dk.sdu.stefh14.math.validation,
+ dk.sdu.stefh14.math.dSL.util,
+ dk.sdu.stefh14.math.services,
+ dk.sdu.stefh14.math.generator,
+ dk.sdu.stefh14.math.parser.antlr,
+ dk.sdu.stefh14.math.scoping,
+ dk.sdu.stefh14.math.dSL,
+ dk.sdu.stefh14.math
+Import-Package: org.apache.log4j
