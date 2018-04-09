@@ -43,25 +43,16 @@ class DSLGenerator extends AbstractGenerator {
 	
 	def int computeExp(Exp exp) {
 		val left = exp.left.computePrim
-		println("computeExp, got left value " + left)
-		println("computeExp, has operator: " + exp.operator)
 		switch exp.operator {
-			Plus: {
-				println("computeExp, in Plus")
-				left+exp.right.computeExp
-			}
+			Plus: left+exp.right.computeExp
 			Minus: left-exp.right.computeExp
 			Mult: left*exp.right.computeExp
 			Div: left/exp.right.computeExp
-			default: {
-				println("computeExp, in default")
-				left
-			}
+			default: left
 		}
 	}
 	
 	def dispatch int computePrim(Number factor) { 
-		println("computePrim, returning " + factor.value)
 		factor.value
 	}
 	
