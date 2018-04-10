@@ -8,7 +8,6 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import javax.swing.JOptionPane
-import dk.sdu.stefh14.math.dSL.Expression
 import dk.sdu.stefh14.math.dSL.MathExp
 import dk.sdu.stefh14.math.dSL.Exp
 import dk.sdu.stefh14.math.dSL.Primary
@@ -40,30 +39,33 @@ class DSLGenerator extends AbstractGenerator {
 	//
 	
 	def int compute(MathExp math) { 
-		math.exp.computeExp
+		math.exp.computeExpression
 	}
 	
-	def int computeExp(Exp exp) {
-		val left = exp.left.computeFactor
+	def dispatch int computeExpression(Exp exp) {
+		val left = exp.left.computeExpression
 		switch exp.operator {
-			Plus: left+exp.right.computeExp
-			Minus: left-exp.right.computeExp
-			Mult: left*exp.right.computeExp
-			Div: left/exp.right.computeExp
+			Plus: left+exp.right.computeExpression
+			Minus: left-exp.right.computeExpression
 			default: left
 		}
 	}
 	
-	def int computeFactor(Factor fac) {
-		fac.left.computePrim
+	def dispatch int computeExpression(Factor fac) {
+		val left = fac.left.computeExpression
+		switch fac.operator {
+			Mult: left*fac.right.computeExpression
+			Div: left/fac.right.computeExpression
+			default: left
+		}
 	}
 	
-	def dispatch int computePrim(Number num) {
-		2
+	def dispatch int computeExpression(Parenthesis par) {
+		par.exp.computeExpression
 	}
 	
-	def dispatch int computePrim(Parenthesis par) {
-		2
+	def dispatch int computeExpression(Number num) {
+		num.value
 	}
 
 	//
@@ -72,13 +74,14 @@ class DSLGenerator extends AbstractGenerator {
 	//
 
 	def CharSequence display(MathExp math) '''Math[«math.exp.displayExp»]'''
-	def CharSequence displayExp(Exp exp) '''Exp[«exp.left.displayPrim»,«exp.operator?.displayOp»,«exp.right?.displayExp»]'''
+	def dispatch CharSequence displayExp(Exp exp) '''Exp[«exp.left.displayExp»,«exp.operator?.displayOp»,«exp.right?.displayExp»]'''
+	def dispatch CharSequence displayExp(Factor exp) '''Factor[«exp.left.displayExp»,«exp.operator?.displayOp»,«exp.right?.displayExp»]'''
+	def dispatch CharSequence displayExp(Number prim) '''Num[«prim.value»]'''
+	def dispatch CharSequence displayExp(Parenthesis pare) '''Parenthesis[«pare.exp.displayExp»]'''
 	def dispatch String displayOp(Plus op)  { "+" }
 	def dispatch String displayOp(Minus op) { "-" }
 	def dispatch String displayOp(Mult op) { "*" }
 	def dispatch String displayOp(Div op) { "/" }
 	def CharSequence displayFactor(Primary primary) { "?" }
-	def dispatch CharSequence displayPrim(Number prim) '''Num[«prim.value»]'''
-	def dispatch CharSequence displayPrim(Parenthesis pare) '''Parenthesis[«pare.exp.displayExp»]'''
 	
 }
