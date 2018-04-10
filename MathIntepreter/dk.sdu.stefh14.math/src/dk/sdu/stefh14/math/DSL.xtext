@@ -6,12 +6,12 @@ MathExp:
 	'result' 'is' exp=Exp
 ;
 
-Exp:
-	Factor ({Exp.left=current} operator=ExpWeakOp right=Exp)?
+Exp returns Expression:
+	Factor ({Exp.left=current} operator=ExpWeakOp right=Factor)*
 ;
 
-Factor:
-	Primary ({Factor.left=current} operator=ExpStrongOp right=Factor)?
+Factor returns Expression:
+	Primary ({Factor.left=current} operator=ExpStrongOp right=Primary)*
 ;
 
 ExpWeakOp:
