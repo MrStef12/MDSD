@@ -2,8 +2,12 @@ grammar dk.sdu.stefh14.math2.DSL with org.eclipse.xtext.common.Terminals
 
 generate dSL "http://www.sdu.dk/stefh14/math2/DSL"
 
+Math:
+	(exps+=MathExp)*
+;
+
 MathExp:
-	'result' 'is' exp=Exp
+	'result' id=STRING 'is' exp=Exp
 ;
 
 Exp returns Expression:
