@@ -22,6 +22,7 @@ import dk.sdu.stefh14.math2.dSL.ExternalDef
 import dk.sdu.stefh14.math2.dSL.ExternalUse
 import dk.sdu.stefh14.math2.dSL.Parameter
 import dk.sdu.stefh14.math2.dSL.MathModel
+import org.eclipse.emf.common.util.EList
 
 /**
  * Generates code from your model files on save.
@@ -45,19 +46,29 @@ class DSLGenerator extends AbstractGenerator {
  */
  	
  	def compile(MathModel model) '''public class MathComputation {
+ 		«IF model.externalDefs.length > 0»
+ 		«model.externalDefs.compileInterface»
+ 		private Externals externals;
+ 		public MathComputation(Externals _externals) {
+ 			externals = _externals;
+ 		}
+ 		«ENDIF»
  		public void compute() {
- 			«FOR dec : model.declarations»
- 			«dec.compileDec»
+ 			«FOR exp : model.mathExps»
+ 			«exp.compileExp»
  			«ENDFOR»
  		}
  	}'''
  	
- 	def dispatch compileDec(MathExp exp) 
- 	'''System.out.println("«exp.id» "+«exp.exp.displayExp»)'''
+ 	def compileInterface(EList<ExternalDef> extDefs)
+ 	'''public static interface Externals {
+ 		«FOR extDef : extDefs»
+ 		public «extDef.displayExt»;
+ 		«ENDFOR»
+ 	}'''
  	
- 	def dispatch compileDec(ExternalDef extDef) {
- 		
- 	}
+ 	def compileExp(MathExp exp) 
+ 	'''System.out.println("«exp.id» "+«exp.exp.displayExp»)'''
 	
 	
 	//
@@ -112,10 +123,10 @@ class DSLGenerator extends AbstractGenerator {
 	}
 	
 	def displayExternalUse(ExternalUse extUse)
-	'''«extUse.external.name»(«FOR arg : extUse.arguments SEPARATOR ", "»«arg»«ENDFOR»)'''
+	'''externals.«extUse.external.name»(«FOR arg : extUse.arguments SEPARATOR ", "»«arg»«ENDFOR»)'''
 	
 	def displayExt(ExternalDef extDef)
-	'''«extDef.name»(«FOR p : extDef.parameters SEPARATOR ", "»«p.displayParam»«ENDFOR»)''' 
+	'''«extDef.returnType» «extDef.name»(«FOR p : extDef.parameters SEPARATOR ", "»«p.displayParam»«ENDFOR»)''' 
 	
 	def displayParam(Parameter param)
 	'''«param.type» «param.varName»'''

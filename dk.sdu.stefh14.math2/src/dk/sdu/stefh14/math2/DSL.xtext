@@ -3,15 +3,11 @@ grammar dk.sdu.stefh14.math2.DSL with org.eclipse.xtext.common.Terminals
 generate dSL "http://www.sdu.dk/stefh14/math2/DSL"
 
 MathModel:
-	declarations+=Declaration*
-;
-
-Declaration:
-	MathExp | ExternalDef
+	externalDefs+=ExternalDef* mathExps+=MathExp*
 ;
 
 ExternalDef:
-	'external' name=ID '(' parameters+=Parameter (',' parameters+=Parameter)* ')' 
+	'external' returnType=ID name=ID '(' parameters+=Parameter (',' parameters+=Parameter)* ')' 
 ;
 
 Parameter:
@@ -55,5 +51,9 @@ Number returns Expression:
 ;
 
 ExternalUse returns Expression:
-	{ExternalUse} external=[ExternalDef] '(' arguments+=ID (',' arguments+=ID)* ')'
+	{ExternalUse} external=[ExternalDef] '(' arguments+=Argument (',' arguments+=Argument)* ')'
+;
+
+Argument:
+	STRING | INT
 ;
