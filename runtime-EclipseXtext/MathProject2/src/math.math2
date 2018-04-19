@@ -1,2 +1,2 @@
-result "result 1" is let x = 20 in x*x end + 20
-result "result 2" is 20
+result "result 1" is 20+(2*20)
+result "result 2" is 20+2

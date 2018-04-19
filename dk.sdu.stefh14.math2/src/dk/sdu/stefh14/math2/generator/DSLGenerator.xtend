@@ -19,6 +19,7 @@ import dk.sdu.stefh14.math2.dSL.Var
 import dk.sdu.stefh14.math2.dSL.Let
 import java.util.Map
 import java.util.HashMap
+import dk.sdu.stefh14.math2.dSL.MathDef
 
 /**
  * Generates code from your model files on save.
@@ -28,11 +29,27 @@ import java.util.HashMap
 class DSLGenerator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
+		var math = resource.allContents.filter(MathDef).next
+		fsa.generateFile("MathComputation.java", math.compile);
+	}
+	
+/*
+ * override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val math = resource.allContents.filter(MathExp).next
 		val result = math.compute
 		System.out.println("Math expression = "+math.display)
 		JOptionPane.showMessageDialog(null, "result = "+result,"Math Language", JOptionPane.INFORMATION_MESSAGE)
 	}
+ */
+ 	
+ 	def compile(MathDef mathDef) '''public class MathComputation {
+ 		public void compute() {
+ 			«FOR exp : mathDef.exps»
+ 			System.out.println("«exp.id» "+«exp.exp.displayExp»);
+ 			«ENDFOR»
+ 		}
+ 	}'''
+	
 	
 	//
 	// Compute function: computes value of expression

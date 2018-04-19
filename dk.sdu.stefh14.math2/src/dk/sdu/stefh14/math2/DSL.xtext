@@ -2,7 +2,7 @@ grammar dk.sdu.stefh14.math2.DSL with org.eclipse.xtext.common.Terminals
 
 generate dSL "http://www.sdu.dk/stefh14/math2/DSL"
 
-Math:
+MathDef:
 	(exps+=MathExp)*
 ;
 
