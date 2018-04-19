@@ -35,7 +35,6 @@ class DSLGenerator extends AbstractGenerator {
 	
 	//
 	// Compute function: computes value of expression
-	// Note: written according to illegal left-recursive grammar, requires fix
 	//
 	
 	def int compute(MathExp math) { 
@@ -70,7 +69,6 @@ class DSLGenerator extends AbstractGenerator {
 
 	//
 	// Display function: show complete syntax tree
-	// Note: written according to illegal left-recursive grammar, requires fix
 	//
 
 	def CharSequence display(MathExp math) '''Math[«math.exp.displayExp»]'''
