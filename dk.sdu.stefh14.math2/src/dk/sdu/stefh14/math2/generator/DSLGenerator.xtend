@@ -8,7 +8,6 @@ import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import dk.sdu.stefh14.math2.dSL.MathExp
-import javax.swing.JOptionPane
 import dk.sdu.stefh14.math2.dSL.Expression
 import dk.sdu.stefh14.math2.dSL.Plus
 import dk.sdu.stefh14.math2.dSL.Minus
@@ -19,7 +18,10 @@ import dk.sdu.stefh14.math2.dSL.Var
 import dk.sdu.stefh14.math2.dSL.Let
 import java.util.Map
 import java.util.HashMap
-import dk.sdu.stefh14.math2.dSL.MathDef
+import dk.sdu.stefh14.math2.dSL.ExternalDef
+import dk.sdu.stefh14.math2.dSL.ExternalUse
+import dk.sdu.stefh14.math2.dSL.Parameter
+import dk.sdu.stefh14.math2.dSL.MathModel
 
 /**
  * Generates code from your model files on save.
@@ -29,7 +31,7 @@ import dk.sdu.stefh14.math2.dSL.MathDef
 class DSLGenerator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		var math = resource.allContents.filter(MathDef).next
+		var math = resource.allContents.filter(MathModel).next
 		fsa.generateFile("MathComputation.java", math.compile);
 	}
 	
@@ -42,13 +44,20 @@ class DSLGenerator extends AbstractGenerator {
 	}
  */
  	
- 	def compile(MathDef mathDef) '''public class MathComputation {
+ 	def compile(MathModel model) '''public class MathComputation {
  		public void compute() {
- 			«FOR exp : mathDef.exps»
- 			System.out.println("«exp.id» "+«exp.exp.displayExp»);
+ 			«FOR dec : model.declarations»
+ 			«dec.compileDec»
  			«ENDFOR»
  		}
  	}'''
+ 	
+ 	def dispatch compileDec(MathExp exp) 
+ 	'''System.out.println("«exp.id» "+«exp.exp.displayExp»)'''
+ 	
+ 	def dispatch compileDec(ExternalDef extDef) {
+ 		
+ 	}
 	
 	
 	//
@@ -97,7 +106,17 @@ class DSLGenerator extends AbstractGenerator {
 			Num: Integer.toString(exp.value)
 			Var: exp.id
 			Let: '''let «exp.id» = «exp.binding.displayExp» in «exp.body.displayExp» end'''
+			ExternalUse: exp.displayExternalUse
 			default: throw new Error("Invalid expression")
 		}+")"
 	}
+	
+	def displayExternalUse(ExternalUse extUse)
+	'''«extUse.external.name»(«FOR arg : extUse.arguments SEPARATOR ", "»«arg»«ENDFOR»)'''
+	
+	def displayExt(ExternalDef extDef)
+	'''«extDef.name»(«FOR p : extDef.parameters SEPARATOR ", "»«p.displayParam»«ENDFOR»)''' 
+	
+	def displayParam(Parameter param)
+	'''«param.type» «param.varName»'''
 }

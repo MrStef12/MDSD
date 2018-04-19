@@ -2,12 +2,28 @@ grammar dk.sdu.stefh14.math2.DSL with org.eclipse.xtext.common.Terminals
 
 generate dSL "http://www.sdu.dk/stefh14/math2/DSL"
 
-MathDef:
-	(exps+=MathExp)*
+MathModel:
+	declarations+=Declaration*
+;
+
+Declaration:
+	MathExp | ExternalDef
+;
+
+ExternalDef:
+	'external' name=ID '(' parameters+=Parameter (',' parameters+=Parameter)* ')' 
+;
+
+Parameter:
+	type=ID varName=ID
 ;
 
 MathExp:
-	'result' id=STRING 'is' exp=Exp
+	'result' id=STRING 'is' exp=ExpType
+;
+
+ExpType returns Expression:
+	Exp | ExternalUse
 ;
 
 Exp returns Expression:
@@ -36,4 +52,8 @@ Parenthesis returns Expression:
 
 Number returns Expression:
 	{Num} value=INT
+;
+
+ExternalUse returns Expression:
+	{ExternalUse} external=[ExternalDef] '(' arguments+=ID (',' arguments+=ID)* ')'
 ;
