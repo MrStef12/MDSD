@@ -16,8 +16,6 @@ import dk.sdu.stefh14.math2.dSL.Div
 import dk.sdu.stefh14.math2.dSL.Num
 import dk.sdu.stefh14.math2.dSL.Var
 import dk.sdu.stefh14.math2.dSL.Let
-import java.util.Map
-import java.util.HashMap
 import dk.sdu.stefh14.math2.dSL.ExternalDef
 import dk.sdu.stefh14.math2.dSL.ExternalUse
 import dk.sdu.stefh14.math2.dSL.Parameter
@@ -35,17 +33,9 @@ class DSLGenerator extends AbstractGenerator {
 		var math = resource.allContents.filter(MathModel).next
 		fsa.generateFile("MathComputation.java", math.compile);
 	}
-	
-/*
- * override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		val math = resource.allContents.filter(MathExp).next
-		val result = math.compute
-		System.out.println("Math expression = "+math.display)
-		JOptionPane.showMessageDialog(null, "result = "+result,"Math Language", JOptionPane.INFORMATION_MESSAGE)
-	}
- */
  	
- 	def compile(MathModel model) '''public class MathComputation {
+ 	def compile(MathModel model) 
+ 	'''public class MathComputation {
  		«IF model.externalDefs.length > 0»
  		«model.externalDefs.compileInterface»
  		private Externals externals;
@@ -69,40 +59,7 @@ class DSLGenerator extends AbstractGenerator {
  	
  	def compileExp(MathExp exp) 
  	'''System.out.println("«exp.id» "+«exp.exp.displayExp»)'''
-	
-	
-	//
-	// Compute function: computes value of expression
-	// Note: written according to illegal left-recursive grammar, requires fix
-	//
-	
-	def int compute(MathExp math) { 
-		math.exp.computeExp(new HashMap<String,Integer>)
-	}
-	
-	def int computeExp(Expression exp, Map<String,Integer> env) {
-		switch exp {
-			Plus: exp.left.computeExp(env)+exp.right.computeExp(env)
-			Minus: exp.left.computeExp(env)-exp.right.computeExp(env)
-			Mult: exp.left.computeExp(env)*exp.right.computeExp(env)
-			Div: exp.left.computeExp(env)/exp.right.computeExp(env)
-			Num: exp.value
-			Var: env.get(exp.id)
-			Let: exp.body.computeExp(env.bind(exp.id,exp.binding.computeExp(env)))
-			default: throw new Error("Invalid expression")
-		}
-	}
-	
-	def Map<String, Integer> bind(Map<String, Integer> env1, String name, int value) {
-		val env2 = new HashMap<String,Integer>(env1)
-		env2.put(name,value)
-		env2 
-	}
 
-	//
-	// Display function: show complete syntax tree
-	// Note: written according to illegal left-recursive grammar, requires fix
-	//
 
 	def String display(MathExp math) { 
 		math.exp.displayExp

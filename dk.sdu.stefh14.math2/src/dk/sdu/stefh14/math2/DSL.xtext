@@ -15,11 +15,7 @@ Parameter:
 ;
 
 MathExp:
-	'result' id=STRING 'is' exp=ExpType
-;
-
-ExpType returns Expression:
-	Exp | ExternalUse
+	'result' id=STRING 'is' exp=Exp
 ;
 
 Exp returns Expression:
@@ -31,7 +27,7 @@ Factor returns Expression:
 ;
 
 Primary returns Expression:
-	Number | Parenthesis | VariableBinding | VariableUse
+	Number | Parenthesis | VariableBinding | VariableUse | ExternalUse
 ;
 
 VariableUse returns Expression:

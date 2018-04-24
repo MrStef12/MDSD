@@ -1,3 +1,5 @@
 external int Power(int num, int pow)
+external int Sqrt(int num)
 result "result 1" is 20+(2*20)
-result "result 2" is Power(5, 8)
+result "result 2" is Power(5, 9) * 5 + Sqrt(5)
+result "result 3" is 5+Sqrt(5)
